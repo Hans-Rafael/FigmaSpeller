@@ -1,0 +1,20 @@
+{
+  "manifest_version": 3,
+  "name": "Figma Spell Checker (ES)",
+  "version": "1.0",
+  "description": "Corrige errores ortográficos en español dentro de Figma.",
+  "permissions": ["scripting", "activeTab"],
+  "host_permissions": ["https://www.figma.com/*"],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://www.figma.com/*"],
+      "js": ["content.js"]
+    }
+  ]
+}
