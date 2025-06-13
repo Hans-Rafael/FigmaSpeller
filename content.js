@@ -1,12 +1,15 @@
-function getEditableTextNodes() {
-  const nodes = document.querySelectorAll('[contenteditable="true"]');
-  const textos = Array.from(nodes).map(node => node.innerText.trim()).filter(t => t.length > 0);
-  console.log("Textos detectados:", textos);
+function getVisibleTextFromFigma() {
+  const allNodes = document.querySelectorAll("span, div, p");
+  const textos = Array.from(allNodes)
+    .map(n => n.innerText?.trim())
+    .filter(t => t && t.length > 5 && /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(t));
+  
+  console.log("Textos visibles encontrados:", textos);
   return textos.join(" ");
 }
 
 function checkSpelling(text) {
-  console.log("Texto enviado a la API:", text);
+  console.log("Enviando texto:", text);
   fetch("https://api.languagetool.org/v2/check", {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -26,16 +29,16 @@ function checkSpelling(text) {
       }
     })
     .catch(err => {
-      console.error("Error al verificar ortografía:", err);
-      alert("❌ Error al conectar con el corrector ortográfico.");
+      console.error("Error:", err);
+      alert("❌ Error al verificar ortografía.");
     });
 }
 
 (function () {
-  const texto = getEditableTextNodes();
+  const texto = getVisibleTextFromFigma();
   if (texto.length > 5) {
     checkSpelling(texto);
   } else {
-    alert("⚠️ No se encontró texto editable o es demasiado corto.");
+    alert("⚠️ No se encontró texto visible o es muy corto.");
   }
 })();
