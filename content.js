@@ -1,6 +1,6 @@
 function getEditableTextNodes() {
   const nodes = document.querySelectorAll('div[contenteditable="true"]');
-  return Array.from(nodes).map(node => node.innerText);
+  return Array.from(nodes).map(node => node.innerText).join(" ");
 }
 
 function checkSpelling(text) {
@@ -15,18 +15,18 @@ function checkSpelling(text) {
     .then(response => response.json())
     .then(result => {
       if (result.matches.length > 0) {
-        alert("Errores detectados:\n" + result.matches.map(m => `→ ${m.message}`).join("\n"));
+        const messages = result.matches.map(m => `• ${m.message}`).join("\n");
+        alert("Errores encontrados:\n\n" + messages);
       } else {
-        alert("Sin errores ortográficos 🎉");
+        alert("✅ Sin errores ortográficos.");
       }
     });
 }
 
-// Esperar unos segundos para que Figma cargue
-setTimeout(() => {
-  const texts = getEditableTextNodes();
-  const fullText = texts.join(" ");
-  if (fullText.length > 10) {
-    checkSpelling(fullText);
-  }
-}, 5000);
+const texto = getEditableTextNodes();
+if (texto.length > 10) {
+  checkSpelling(texto);
+} else {
+  alert("No se detectó texto editable suficiente.");
+}
+// Este script se ejecuta en la página actual para revisar el texto editable
